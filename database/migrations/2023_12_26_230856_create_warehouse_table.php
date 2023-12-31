@@ -13,8 +13,9 @@ return new class extends Migration
     {
         Schema::create('warehouse', function (Blueprint $table) {
             $table->id();
-            $table->integer('book_id');
+            $table->integer('medicine_id');
             $table->float('actual_quantity',100,2);
+            $table->double('amount',100,2);
             $table->timestamps();
         });
     }

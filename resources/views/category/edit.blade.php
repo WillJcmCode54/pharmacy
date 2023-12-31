@@ -1,18 +1,18 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Estanterías')
+@section('title', 'Categorías')
 
 @section('content_header')
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-            <h1>Estanterías</h1>
+            <h1>Categorías</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a></li>
-                    <li class="breadcrumb-item" ><a href="{{route('shelf.index')}}">Estanterías</a></li>
+                    <li class="breadcrumb-item" ><a href="{{route('category.index')}}">Categorías</a></li>
                     <li class="breadcrumb-item active">Editar</li>
                 </ol>
             </div>
@@ -33,18 +33,18 @@
     @endif
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Editar Estantería</h3>
+        <h3 class="card-title">Editar Categoría</h3>
     </div>
-    <form action="{{ route('shelf.update',['id'=> $shelf->id]) }}" method="post">
+    <form action="{{ route('category.update',['id'=> $category->id]) }}" method="post">
         @csrf
-        @method('PUT')
+        @method("PUT")
         <div class="card-body">
             {{-- Name field --}}
             <div class="row">
                 <div class="col-12">
                     <div class="input-group mb-3">
                         <input type="text" name="name" class="form-control @error('name') is-invalid @enderror"
-                               value="{{ $shelf->name }}" placeholder="{{ __('Nombre') }}" required="required"autofocus>
+                               value="{{ $category->name }}" placeholder="{{ __('Nombre') }}" required="required"autofocus>
             
                         <div class="input-group-append">
                             <div class="input-group-text bg-primary">
@@ -62,7 +62,7 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <x-adminlte-textarea name="decription" label="Descripcion" rows=5  igroup-size="sm" placeholder="Description...">{{ $shelf->decription }}
+                    <x-adminlte-textarea name="decription" label="Descripcion" rows=5  igroup-size="sm" placeholder="Description...">{{ $category->decription }}
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-primary">
                                 <i class="fas fa-lg fa-file-alt text-white"></i>

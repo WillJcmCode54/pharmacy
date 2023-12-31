@@ -37,6 +37,7 @@
     </div>
     <form action="{{ route('customer.update',['id'=> $customer->id]) }}" method="post">
         @csrf
+        @method("PUT")
         <div class="card-body">
             {{-- Name field --}}
             <div class="row">

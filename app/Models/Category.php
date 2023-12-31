@@ -5,16 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Warehouse extends Model
+class Category extends Model
 {
     use HasFactory;
-    /* tabla de almacen */
-    public $table = "warehouse";
-
+    public $table = "categories";
     public $fillable = [
         'id',
-        'medicine_id',
-        'actual_quantity',
-        'amount',
+        'name',
+        'decription'
     ];
 }

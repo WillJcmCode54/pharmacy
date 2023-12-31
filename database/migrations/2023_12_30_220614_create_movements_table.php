@@ -11,16 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('book_movements', function (Blueprint $table) {
+        Schema::create('movements', function (Blueprint $table) {
             $table->id();
             $table->string('code')->unique();
             $table->string('type_movement');
             $table->string('status');
-            $table->date('loan_date')->nullable();
-            $table->date('return_date')->nullable();
-            $table->date('real_date')->nullable();
             $table->integer('user_id');
-            $table->integer('customer_id')->nullable();
+            $table->integer('customer_id');
+            $table->double('total', 100, 2);
             $table->timestamps();
         });
     }
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('book_movements');
+        Schema::dropIfExists('movements');
     }
 };

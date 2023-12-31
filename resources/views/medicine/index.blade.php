@@ -37,7 +37,7 @@
     <div class="card-header">
         <h3 class="card-title">listado de Libros</h3>
         <div class="card-tools">
-            <a class="btn btn-primary btn-md" href="{{route('book.create')}}">{{ __('Crear') }}</a>
+            <a class="btn btn-primary btn-md" href="{{route('medicine.create')}}">{{ __('Crear') }}</a>
         </div>
     </div>
     <div class="card-body">
@@ -45,46 +45,45 @@
     @php
         $heads = [
             'ID',
-            'Título',
-            'Autor',
-            'Editiorial',
-            'Estantería',
-            'Año de publicacion',
-            'Genero',
+            'Nombre',
             'Descripcion',
+            'Caduca',
+            'Monto',
+            'Estantería',
+            'Categoria',
             ['label' => '#', 'no-export' => true],
         ];
     @endphp
 
 {{-- Minimal example / fill data using the component slot --}}
 <x-adminlte-datatable id="table1" :heads="$heads">
-    @foreach( $books as $book)
+    @foreach( $medicines as $medicine)
         <tr>
-            <td>{{$book->id}}</td>
-            <td>{{$book->title}}</td>
-            <td>{{$book->author}}</td>
-            <td>{{$book->editorial}}</td>
-            <td>{{$book->shelf}}</td>
+            <td>{{$medicine->id}}</td>
+            <td>{{$medicine->name}}</td>
+            <td>{{$medicine->decription}}</td>
+            <td>{{$medicine->expiration_date}}</td>
             @php
-                $date = Carbon::parse($book->publication_year);
+                $date = Carbon::parse($medicine->expiration_date);
                 $date = $date->format('d-m-Y');
-            @endphp
+                @endphp
             <td>{{$date}}</td>
-            <td>{{$book->genre}}</td>
-            <td>{{$book->decription}}</td>
+            <td>{{$medicine->amount}}</td>
+            <td>{{$medicine->shelf}}</td>
+            <td>{{$medicine->category}}</td>
             <td> 
                 <div class="btn-group">
                     <a class="btn btn-xs btn-default text-teal" 
-                        data-title="Cliente {{$book->title}}" 
+                        data-title="Cliente {{$medicine->name}}" 
                         data-size="lg" 
-                        data-url="{{route('book.view',['id'=> $book->id])}}"
+                        data-url="{{route('medicine.view',['id'=> $medicine->id])}}"
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
-                    <a href="{{route('book.edit',['id'=>$book->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                    <a href="{{route('medicine.edit',['id'=>$medicine->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                     <button class="btn btn-xs btn-default text-danger" 
                         data-action="delete-modal" 
-                        data-url="{{route('book.destroy',['id'=> $book->id])}}" 
-                        data-title="Eliminar a {{$book->title}}"><i class="fa fa-lg fa-fw fa-trash"></i>
+                        data-url="{{route('medicine.destroy',['id'=> $medicine->id])}}" 
+                        data-title="Eliminar a {{$medicine->name}}"><i class="fa fa-lg fa-fw fa-trash"></i>
                     </button>
                 </div>
             </td>

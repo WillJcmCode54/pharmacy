@@ -14,7 +14,7 @@ return [
     |
     */
 
-    'title' => 'Bibliteca Virtual',
+    'title' => 'Farmacia Virtual',
     'title_prefix' => '',
     'title_postfix' => '',
 
@@ -63,7 +63,7 @@ return [
     |
     */
 
-    'logo' => '<b>Biblioteca</b>Virtual',
+    'logo' => '<b>Farmacia</b>Virtual',
     'logo_img' => 'vendor/adminlte/dist/img/logo.png',
     'logo_img_class' => 'brand-image img-circle elevation-3',
     'logo_img_xl' => null,
@@ -110,7 +110,7 @@ return [
         'enabled' => true,
         'img' => [
             'path' => 'vendor/adminlte/dist/img/logo.png',
-            'alt' => 'BibliotecaVirtual Preloader Image',
+            'alt' => 'FarmaciaVirtual Preloader Image',
             'effect' => 'animation__shake',
             'width' => 60,
             'height' => 60,
@@ -192,9 +192,9 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-light-primary elevation-4',
     'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
+    'classes_topnav' => 'navbar-primary navbar-dark',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
 
@@ -294,38 +294,38 @@ return [
         // Sidebar items
         ['header' => 'main_navigation'],
         [
-            'text' => 'Dashboard',
+            'text' => 'dashboard',
             'url'  => '/dashboard',
-            'icon' => 'fas fa-fw fa-home',
+            'icon' => 'fas fa-fw fa-clinic-medical',
         ],
         [
-            'text' => 'Books',
-            'url'  => '/book',
-            'icon' => 'fas fa-fw fa-book',
+            'text' => 'medicines',
+            'url'  => '/medicine',
+            'icon' => 'fas fa-fw fa-tablets',
         ],
         [
-            'text' => 'Warehouse',
+            'text' => 'warehouse',
             'url'  => '/warehouse',
-            'icon' => 'fas fa-fw fa-boxes',
+            'icon' => 'fas fa-fw fa-warehouse',
         ],
         [
-            'text'    => 'Movimientos',
-            'icon'    => 'fas fa-fw fa-tasks',
+            'text'    => 'movements',
+            'icon'    => 'fas fa-paste',
             'submenu' => [
                     [
-                        'text' => 'show',
+                        'text' => 'resumen',
                         'icon' => 'fas fa-fw fa-eye',
                         'url'  => '/movement',
                     ],
                     [
-                        'text' => 'Prestamos',
-                        'icon' => 'fas fa-fw fa-thumbtack',
-                        'url' => '/lend'
+                        'text' => 'load',
+                        'icon' => 'fas fa-fw fa-file-import',
+                        'url' => '/movement/create?type=load'
                     ],
                     [
-                        'text' => 'Devoluciones',
+                        'text' => 'download',
                         'icon' => 'fas fa-fw fa-thumbtack',
-                        'url' => '/return',
+                        'url' => '/movement/create?type=download',
                     ]
             ],
         ],
@@ -344,6 +344,11 @@ return [
             'text' => 'shelfs',
             'url'  => '/shelf',
             'icon' => 'fas fa-fw fa-bookmark',
+        ],
+        [
+            'text' => 'categories',
+            'url'  => '/category',
+            'icon' => 'fas fa-fw fa-file-alt',
         ],
     ],
 
