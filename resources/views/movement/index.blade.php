@@ -102,7 +102,7 @@
                     <a class="btn btn-xs btn-default text-teal" 
                         data-title="Movimiento {{$movement->code}}" 
                         data-size="lg" 
-                        data-url="{{route('movement.view',['id'=> $movement->id])}}"
+                        data-url="{{route('movement.show',['id'=> $movement->id])}}"
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
                     @if ($movement->status == 'saved')     
@@ -175,7 +175,7 @@
 
 
 
-{{--Modal view--}}
+{{--Modal show--}}
 
 <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" id="modal-dialog" role="document">

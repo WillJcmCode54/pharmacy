@@ -60,7 +60,7 @@
                     <a class="btn btn-xs btn-default text-teal" 
                         data-title="Cliente {{$category->name}}" 
                         data-size="lg" 
-                        data-url="{{route('category.view',['id'=> $category->id])}}"
+                        data-url="{{route('category.show',['id'=> $category->id])}}"
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
                     <a href="{{route('category.edit',['id'=>$category->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
@@ -99,7 +99,7 @@
     </div>
 </div>
 
-{{--Modal view--}}
+{{--Modal show--}}
 
 <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" id="modal-dialog" role="document">
