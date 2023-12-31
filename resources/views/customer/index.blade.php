@@ -68,13 +68,13 @@
                     <a class="btn btn-xs btn-default text-teal" 
                         data-title="Cliente {{$customer->name}}" 
                         data-size="lg" 
-                        data-url="{{route('customer.show',['id'=> $customer->id])}}"
+                        data-url="{{route('customer.show',['customer'=> $customer->id])}}"
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
-                    <a href="{{route('customer.edit',['id'=>$customer->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                    <a href="{{route('customer.edit',['customer'=>$customer->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                     <button class="btn btn-xs btn-default text-danger" 
                         data-action="delete-modal" 
-                        data-url="{{route('customer.destroy',['id'=> $customer->id])}}" 
+                        data-url="{{route('customer.destroy',['customer'=> $customer->id])}}" 
                         data-title="Eliminar a {{$customer->name}}"><i class="fa fa-lg fa-fw fa-trash"></i>
                     </button>
                 </div>

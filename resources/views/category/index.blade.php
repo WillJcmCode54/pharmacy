@@ -60,13 +60,13 @@
                     <a class="btn btn-xs btn-default text-teal" 
                         data-title="Cliente {{$category->name}}" 
                         data-size="lg" 
-                        data-url="{{route('category.show',['id'=> $category->id])}}"
+                        data-url="{{route('category.show',['category'=> $category->id])}}"
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
-                    <a href="{{route('category.edit',['id'=>$category->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                    <a href="{{route('category.edit',['category'=>$category->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                     <button class="btn btn-xs btn-default text-danger" 
                         data-action="delete-modal" 
-                        data-url="{{route('category.destroy',['id'=> $category->id])}}" 
+                        data-url="{{route('category.destroy',['category'=> $category->id])}}" 
                         data-title="Eliminar a {{$category->name}}"><i class="fa fa-lg fa-fw fa-trash"></i>
                     </button>
                 </div>

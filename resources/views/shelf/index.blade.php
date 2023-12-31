@@ -60,13 +60,13 @@
                     <a class="btn btn-xs btn-default text-teal" 
                         data-title="Cliente {{$shelf->name}}" 
                         data-size="lg" 
-                        data-url="{{route('shelf.view',['id'=> $shelf->id])}}"
+                        data-url="{{route('shelf.show',['shelf'=> $shelf->id])}}"
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
-                    <a href="{{route('shelf.edit',['id'=>$shelf->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                    <a href="{{route('shelf.edit',['shelf'=>$shelf->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                     <button class="btn btn-xs btn-default text-danger" 
                         data-action="delete-modal" 
-                        data-url="{{route('shelf.destroy',['id'=> $shelf->id])}}" 
+                        data-url="{{route('shelf.destroy',['shelf'=> $shelf->id])}}" 
                         data-title="Eliminar a {{$shelf->name}}"><i class="fa fa-lg fa-fw fa-trash"></i>
                     </button>
                 </div>
@@ -99,7 +99,7 @@
     </div>
 </div>
 
-{{--Modal view--}}
+{{--Modal show--}}
 
 <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" id="modal-dialog" role="document">

@@ -76,13 +76,13 @@
                     <a class="btn btn-xs btn-default text-teal" 
                         data-title="Cliente {{$medicine->name}}" 
                         data-size="lg" 
-                        data-url="{{route('medicine.show',['id'=> $medicine->id])}}"
+                        data-url="{{route('medicine.show',['medicine'=> $medicine->id])}}"
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
-                    <a href="{{route('medicine.edit',['id'=>$medicine->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                    <a href="{{route('medicine.edit',['medicine'=>$medicine->id])}}" class="btn btn-xs btn-default text-primary" title="Edit"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                     <button class="btn btn-xs btn-default text-danger" 
                         data-action="delete-modal" 
-                        data-url="{{route('medicine.destroy',['id'=> $medicine->id])}}" 
+                        data-url="{{route('medicine.destroy',['medicine'=> $medicine->id])}}" 
                         data-title="Eliminar a {{$medicine->name}}"><i class="fa fa-lg fa-fw fa-trash"></i>
                     </button>
                 </div>

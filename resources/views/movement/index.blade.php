@@ -102,21 +102,21 @@
                     <a class="btn btn-xs btn-default text-teal" 
                         data-title="Movimiento {{$movement->code}}" 
                         data-size="lg" 
-                        data-url="{{route('movement.show',['id'=> $movement->id])}}"
+                        data-url="{{route('movement.show',['movement'=> $movement->id])}}"
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
                     @if ($movement->status == 'saved')     
-                        <a href="{{route('movement.edit',['id'=> $movement->id])}}" class="btn btn-xs btn-default text-primary" title="Editar"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                        <a href="{{route('movement.edit',['movement'=> $movement->id])}}" class="btn btn-xs btn-default text-primary" title="Editar"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                         <button class="btn btn-xs btn-default text-warning"  
                             title="Asentar"
                             data-action="status-modal" 
-                            data-url="{{route('movement.status',['id'=> $movement->id])}}" 
+                            data-url="{{route('movement.status',['movement'=> $movement->id])}}" 
                             data-title="Asentar el movimiento {{$movement->code}}"><i class="fas fa-fw fa-thumbtack "></i>
                         </button>
                         <button class="btn btn-xs btn-default text-danger" 
                             title="Eliminar"
                             data-action="delete-modal" 
-                            data-url="{{route('movement.destroy',['id'=> $movement->id])}}" 
+                            data-url="{{route('movement.destroy',['movement'=> $movement->id])}}" 
                             data-title="Eliminar el movimiento {{$movement->code}}"><i class="fa fa-lg fa-fw fa-trash"></i>
                         </button>
                     @endif
