@@ -2,17 +2,17 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
-use App\Models\Warehouse;
+use App\Models\Medicine;
 use Illuminate\Http\Request;
 
 class WarehouseController extends Controller
 {
     public function index(){
-        $books = Book::select('books.*','warehouse.actual_quantity AS quantity', 'shelfs.name AS shelf')
-                     ->join('shelfs', 'shelfs.id', '=', 'books.shelf_id')
-                    ->join('warehouse','warehouse.book_id','=','books.id')
+        $medicines = Medicine::select('medicines.*','warehouse.actual_quantity AS quantity', 'shelfs.name AS shelf', 'categories.name AS category')
+                     ->join('shelfs', 'shelfs.id', '=', 'medicines.shelf_id')
+                    ->join('warehouse','warehouse.medicine_id','=','medicines.id')
+                    ->join('categories','medicines.category_id',"=",'categories.id')
                     ->orderBy("id","desc")->get();
-        return view("warehouse.index",compact("books"));
+        return view("warehouse.index",compact("medicines"));
     }
 }

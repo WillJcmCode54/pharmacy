@@ -10,12 +10,18 @@
     </div>
     <div class="col-md-4">
         <p><Strong>Tipo de Movimiento:</Strong> 
-        @if ($movements->type_movement == "load")
+            @if ($movements->type_movement == "load")
             Cargar
-        @else
+            @else
             Descargar
-        @endif
+            @endif
         </p>
+    </div>
+    <div class="col-md-4">
+        <p><Strong>Codigo de Referencia:</Strong> {{$movements->customer}}</p>
+    </div>
+    <div class="col-md-4">
+        <p><Strong>total:</Strong> {{($movements->total < 0 ) ? number_format($movements->total*-1,2) : number_format($movements->total,2)}}</p>
     </div>
 </div>
 <div class="row p-2">
@@ -24,20 +30,21 @@
         <table class="table table-md">
             <thead>
                 <th>#</th>
-                <th>Libro</th>
+                <th>Medicina</th>
+                <th>Estanterias</th>
                 <th>Cantidad</th>
+                <th>Monto</th>
+                <th>Subtotal</th>
             </thead>
             <tbody id="tbody">
                 @foreach ($movementsDetails as $detail)
-                <tr id="{{$detail->book_id}}">
-                    <input type="hidden" name="book_id[]" value="{{$detail->book_id}}">
-                    <td>{{$detail->book_id}}</td>
-                    <td>{{$detail->title}} de {{$detail->author}} ({{$detail->publication_year}})</td>
-                    @php
-                        $quantity = ($detail->quantity < 0 ) ? $detail->quantity * -1 : $detail->quantity  ;
-                        $color = ($detail->quantity < 0 ) ? "danger" : "access"  ;
-                    @endphp
-                    <td><p class="text-{{$color}}">{{$quantity}}</p></td>
+                <tr>
+                    <td>{{$detail->id}}</td>
+                    <td>{{$detail->name}}</td>
+                    <td>{{$detail->shelf}}</td>
+                    <td>{{ ($detail->quantity < 0) ? $detail->quantity*-1 : $detail->quantity}}</td>
+                    <td>{{number_format($detail->amount,2)}}</td>
+                    <td id="subtotal">{{($detail->subtotal < 0 ) ? number_format($detail->subtotal*-1,2) : number_format($detail->subtotal,2)}}</td>
                 </tr>
                 @endforeach
             </tbody>

@@ -110,8 +110,7 @@ class CustomerController extends Controller
             $number_id = $legal."".$pre_value;
         }        
         
-        $phone = ($request->user()->phone);
-        $phone = (($phone[0]) != "+") ? "+58".$request->user()->phone : $request->user()->phone;
+        $phone = (($request->phone[0]) != "+") ? "+58".preg_replace("/[^0-9-.]/", "",$request->phone) : $request->phone;
 
         $status = $customer->update([
             'name' => $request->name,

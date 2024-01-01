@@ -35,7 +35,7 @@
     <div class="card-header">
         <h3 class="card-title">Editar Categoría</h3>
     </div>
-    <form action="{{ route('category.update',['id'=> $category->id]) }}" method="post">
+    <form action="{{ route('category.update',['category'=> $category->id]) }}" method="post">
         @csrf
         @method("PUT")
         <div class="card-body">

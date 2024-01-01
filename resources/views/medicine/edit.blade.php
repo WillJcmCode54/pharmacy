@@ -1,19 +1,19 @@
 
 @extends('adminlte::page')
 
-@section('title', 'Libros')
+@section('title', 'Medicinas')
 
 @section('content_header')
 
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-            <h1>Libros</h1>
+            <h1>Medicinas</h1>
             </div>
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
                     <li class="breadcrumb-item"><a href="{{route('home')}}">Dashboard</a></li>
-                    <li class="breadcrumb-item" ><a href="{{route('book.index')}}">Libros</a></li>
+                    <li class="breadcrumb-item" ><a href="{{route('medicine.index')}}">Medicinas</a></li>
                     <li class="breadcrumb-item active">Editar</li>
                 </ol>
             </div>
@@ -34,9 +34,9 @@
     @endif
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Editar Libro</h3>
+        <h3 class="card-title">Editar Medicina</h3>
     </div>
-    <form action="{{ route('book.update', ['id' => $book->id]) }}" method="post">
+    <form action="{{ route('medicine.update', ['medicine' => $medicine->id]) }}" method="post">
         @csrf
         @method('PUT')
         <div class="card-body">
@@ -49,7 +49,7 @@
             
                         <div class="input-group-append">
                             <div class="input-group-text bg-primary">
-                                <span class="fas fa-book {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                                <span class="fas fa-medicine {{ config('adminlte.classes_auth_icon', '') }}"></span>
                             </div>
                         </div>
                         @error('name')

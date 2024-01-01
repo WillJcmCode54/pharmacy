@@ -63,20 +63,39 @@
                 </div>
             </div>
             <div class="row">
-                <div class="col-md-6 col-sm-12">
-                    <x-adminlte-select2 name="book_id_select" id="book_id_select" label="Libro" label-class="text-lightblue"
-                        igroup-size="md" data-placeholder="{{__('Agregar Libro...')}}">
+                <div class="col-md-6">
+                    <x-adminlte-select2 name="medicine_id_select" id="medicine_id_select" label="Medicina" label-class="text-lightblue"
+                        igroup-size="md" data-placeholder="{{__('Agregar Medicina...')}}">
                         <x-slot name="prependSlot">
                             <div class="input-group-text bg-gradient-info">
                                 <i class="fas fa-book"></i>
                             </div>
                         </x-slot>
-                        <option>{{__('Agregar Libro...')}}</option>
-                        @foreach ($books as $book)
-                            <option value="{{ $book->id }}"> {{ $book->title }} {{ $book->author}} ({{Carbon::parse($book->publication_year)->format('d-m-Y')}})</option>
+                        <option>{{__('Agregar Medicina...')}}</option>
+                        @foreach ($medicines as $medicine)
+                            <option value="{{ $medicine->id }}"> {{ $medicine->name }} {{$medicine->shelf}}{{ $medicine->category}} </option>
                         @endforeach
                     </x-adminlte-select2>
-                    @error('book_id')
+                    @error('medicine_id')
+                        <span class="invalid-feedback" role="alert" style="display: block!important;">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="col-md-6">
+                    <x-adminlte-select2 name="customer_id" id="customer_id_select" label="Cliente" label-class="text-lightblue"
+                        igroup-size="md" data-placeholder="{{__('Agregar Cliente...')}}">
+                        <x-slot name="prependSlot">
+                            <div class="input-group-text bg-gradient-info">
+                                <i class="fas fa-book"></i>
+                            </div>
+                        </x-slot>
+                        <option>{{__('Agregar Cliente...')}}</option>
+                        @foreach ($customers as $customer)
+                            <option value="{{ $customer->id }}" {{old('customer_id') == $customer->id ? 'selected' :''}}> {{ $customer->name }} {{$customer->last_name}}</option>
+                        @endforeach
+                    </x-adminlte-select2>
+                    @error('customer_id')
                         <span class="invalid-feedback" role="alert" style="display: block!important;">
                             <strong>{{ $message }}</strong>
                         </span>
@@ -89,12 +108,19 @@
                         <table class="table table-md">
                             <thead>
                                 <th>#</th>
-                                <th>Libro</th>
+                                <th>Medicina</th>
+                                <th>Estanterias</th>
                                 <th>Cantidad</th>
+                                <th>Monto</th>
+                                <th>Subtotal</th>
                                 <th><i class="fa fa-lg fa-fw fa-trash"></i></th>
                             </thead>
                             <tbody id="tbody">
                             </tbody>
+                            <tfoot  >
+                                <td colspan="5" class="text-right">TOTAL </td>
+                                <td id="total"></td>
+                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -113,37 +139,80 @@
 @stop
 @section('js')
     <script>
-        var selectItems = $('#book_id_select');
+        var selectItems = $('#medicine_id_select');
 
+
+        // total
+        function total() {
+            let subtotal = document.querySelectorAll('input.subtotal');
+                var total = 0;
+                subtotal.forEach(element => {
+                    total += parseFloat(element.value);
+                });
+
+                document.querySelector("td#total").innerHTML= `<input type="hidden" name="total" id="total" value="${parseFloat(total).toFixed(2)}"/>${parseFloat(total).toFixed(2)}`;
+            
+        }
         //============ Add product ==================
         selectItems.on("select2:select", async function (e) {
             var la = selectItems.select2('data');
             const id_article = la[0].id;
             if($.isNumeric(id_article)){
-                var response = await fetch(`/book/check/${id_article}`, {
+                var response = await fetch(`/medicine/check/${id_article}`, {
                     headers: { 'Content-Type': 'application/json' }
                  });
                 const item = await response.json();
+                
                 if (!$(`tr#${item.id}`).length) {
                     var quantity = 1;
                     let htmltable = `<tr id="${item.id}">
-                                        <input type="hidden" name="book_id[]" value="${item.id}">
+                                        <input type="hidden" name="medicine_id[]" value="${item.id}">
                                         <td>${item.id}</td>
-                                        <td>${item.title} de ${item.author} (${item.publication_year})</td>
-                                        <td><input type="number" name="quantity[${item.id}]" class="form-control quantity" value="${quantity}"  min="1" step="any"></td>
+                                        <td>${item.name}</td>
+                                        <td>${item.shelf}</td>
+                                        <td>
+                                            <input type="number" name="quantity[${item.id}]" class="form-control quantity" value="${quantity}" min="0" step="any"/>
+                                        </td>
+                                        <td>
+                                            <input type="hidden" name="amount[${item.id}]" class="form-control" value="${(item.amount)}">
+                                            ${parseFloat(item.amount).toFixed(2)}
+                                        </td>
+                                        <td id="subtotal">
+                                            <input type="hidden" name="subtotal[${item.id}]" class="form-control subtotal" value="${(quantity * item.amount)}"/>
+                                            ${parseFloat(quantity * item.amount).toFixed(2)}
+                                        </td>
                                         <td><a class="btn btn-outline-danger delete-article"><i class="fas fa-trash-alt delete-article"></i></a></td>
                                     </tr>`;
                     $('tbody').append(htmltable);
                 }
-                $("#book_id").val('').trigger('change')
+                $("#medicine_id").val('').trigger('change')
+
+                total();
             }
         });
 
-        //======== Delete Item =======
-        $(document).on('click','.delete-article', function(event) {
-            var tr = event.target.closest("tr");
-            let RemoveItems =  $(`tr#${tr.id}`);
-            RemoveItems.remove();
+
+        document.addEventListener('click', function(e){
+            var event = e.target;
+            if(event.closest('a.delete-article')){
+                let itemRemove = event.closest('tr');
+                itemRemove.remove();
+                total();
+            }
         });
+
+        document.addEventListener('input', function (e) {
+            var event = e.target
+            if(event.closest('input.quantity')){
+                let quantity = event.value;
+                let tr = event.closest('tr');
+                let amount = tr.querySelector('td > input[name="amount['+tr.id+']"]').value;
+                let td_subtotal = tr.querySelector('td#subtotal');
+                td_subtotal.innerHTML= `<input type="hidden" name="subtotal[${tr.id}]" class="form-control subtotal" value="${(parseFloat(quantity * amount).toFixed(2))}" >${parseFloat(quantity * amount).toFixed(2)}`;
+                total();
+            }
+        })
+
+        
     </script>
 @stop

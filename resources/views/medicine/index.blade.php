@@ -62,12 +62,7 @@
             <td>{{$medicine->id}}</td>
             <td>{{$medicine->name}}</td>
             <td>{{$medicine->decription}}</td>
-            <td>{{$medicine->expiration_date}}</td>
-            @php
-                $date = Carbon::parse($medicine->expiration_date);
-                $date = $date->format('d-m-Y');
-                @endphp
-            <td>{{$date}}</td>
+            <td>{{Carbon::parse($medicine->expiration_date)->format('d-m-Y')}}</td>
             <td>{{$medicine->amount}}</td>
             <td>{{$medicine->shelf}}</td>
             <td>{{$medicine->category}}</td>

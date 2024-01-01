@@ -45,12 +45,13 @@ Route::middleware('auth')->group(function () {
     // Categorias
         Route::resource('/category', CategoryController::class);
 
-    // Libros
+    // Medicina
         Route::resource('/medicine', MedicineController::class);
+        Route::get('/medicine/check/{id}', [MedicineController::class, 'check'])->name('medicine.check');
 
     // Movimeintos
         Route::resource('/movement', MovementController::class);
-        Route::post('/movement/status/{id}', [MovementController::class, 'changeStatus'])->name('movement.status');
+        Route::post('/movement/status/{movement}', [MovementController::class, 'changeStatus'])->name('movement.status');
 });
 
 require __DIR__.'/auth.php';

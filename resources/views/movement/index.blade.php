@@ -106,16 +106,18 @@
                         data-action="show-modal"><i class="fa fa-lg fa-fw fa-eye"></i>
                     </a>
                     @if ($movement->status == 'saved')     
-                        <a href="{{route('movement.edit',['movement'=> $movement->id])}}" class="btn btn-xs btn-default text-primary" title="Editar"><i class="fa fa-lg fa-fw fa-pen"></i></a>
+                    <a href="{{route('movement.edit',['movement'=> $movement->id])}}" class="btn btn-xs btn-default text-primary" title="Editar"><i class="fa fa-lg fa-fw fa-pen"></i></a>
                         <button class="btn btn-xs btn-default text-warning"  
                             title="Asentar"
                             data-action="status-modal" 
+                            data-size="md" 
                             data-url="{{route('movement.status',['movement'=> $movement->id])}}" 
                             data-title="Asentar el movimiento {{$movement->code}}"><i class="fas fa-fw fa-thumbtack "></i>
                         </button>
                         <button class="btn btn-xs btn-default text-danger" 
                             title="Eliminar"
                             data-action="delete-modal" 
+                            data-size="md" 
                             data-url="{{route('movement.destroy',['movement'=> $movement->id])}}" 
                             data-title="Eliminar el movimiento {{$movement->code}}"><i class="fa fa-lg fa-fw fa-trash"></i>
                         </button>
@@ -128,7 +130,7 @@
 
 {{-- modal Status --}}
 <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" id="modal-dialog" role="document">
+    <div class="modal-dialog" id="modal-dialog-status" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalSLabel"></h5>
@@ -150,7 +152,7 @@
 </div>
  {{-- Modal delete --}}
 <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" id="modal-dialog" role="document">
+    <div class="modal-dialog" id="modal-dialog-delete" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalDLabel"></h5>
@@ -178,7 +180,7 @@
 {{--Modal show--}}
 
 <div class="modal fade" id="commonModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" id="modal-dialog" role="document">
+    <div class="modal-dialog" id="modal-dialog-show" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalLabel"></h5>
@@ -205,25 +207,25 @@
             const response = await fetch(target.dataset.url);
             const body =  await response.text();
             document.querySelector('#modalContent').innerHTML = body;
-            document.querySelector('#modal-dialog').classList.add('modal-'+target.dataset.size);
+            document.querySelector('#modal-dialog-show').classList.add('modal-'+target.dataset.size);
             $('#commonModal').modal('show');
         }
 
         if(e.target.closest('button[data-action="delete-modal"]')){
             let getDelete = e.target.closest('button[data-action="delete-modal"]');
-            console.log(getDelete);
             e.preventDefault();
             document.querySelector('#modalDLabel').innerHTML= getDelete.dataset.title;
             document.querySelector('form[id="deleteFormModal"]').action= getDelete.dataset.url
+            document.querySelector('#modal-dialog-delete').classList.add('modal-'+getDelete.dataset.size);
             $('#deleteModal').modal('show');
         }
 
         if(e.target.closest('button[data-action="status-modal"]')){
             let getStatus = e.target.closest('button[data-action="status-modal"]');
-            console.log(getStatus);
             e.preventDefault();
             document.querySelector('#modalSLabel').innerHTML= getStatus.dataset.title;
             document.querySelector('form[id="statusFormModal"]').action= getStatus.dataset.url
+            document.querySelector('#modal-dialog-status').classList.add('modal-'+getStatus.dataset.size);
             $('#statusModal').modal('show');
         }
         

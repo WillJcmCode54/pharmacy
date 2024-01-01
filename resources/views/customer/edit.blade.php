@@ -35,7 +35,7 @@
     <div class="card-header">
         <h3 class="card-title">Editar Cliente</h3>
     </div>
-    <form action="{{ route('customer.update',['id'=> $customer->id]) }}" method="post">
+    <form action="{{ route('customer.update',['customer'=> $customer->id]) }}" method="post">
         @csrf
         @method("PUT")
         <div class="card-body">

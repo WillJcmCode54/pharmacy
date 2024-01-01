@@ -17,7 +17,7 @@ class MedicineController extends Controller
      */
     public function index()
     {
-        $medicines = Medicine::select('medicines.*','shelfs.name AS shelf')
+        $medicines = Medicine::select('medicines.*','shelfs.name AS shelf','categories.name AS category')
                         ->join('shelfs','medicines.shelf_id',"=",'shelfs.id')
                         ->join('categories','medicines.category_id',"=",'categories.id')
                         ->get();
@@ -71,13 +71,11 @@ class MedicineController extends Controller
             'amount' => $request->amount,
             'decription' => $request->decription,
         ]);
-        Warehouse::updateOrInsert(
-            [
+        Warehouse::create([
             'medicine_id'=> $medicine->id,
-            'amount'=> $medicine->id,
-            ],
-            ['actual_quantity'=> 0]
-        );
+            'amount'=> $medicine->amount,
+            'actual_quantity'=> 0
+        ]);
         if($medicine){
             return redirect()->route('medicine.index')->with('success','Guardado con Exitoso');
         }else{
@@ -135,7 +133,7 @@ class MedicineController extends Controller
         }
 
         $medicine = Medicine::find($id);
-        $date = Carbon::parse($request->date);
+        $date = Carbon::parse($request->expiration_date);
         $date = $date->format('Y-m-d');
 
         $status = $medicine->update([
@@ -146,6 +144,8 @@ class MedicineController extends Controller
             'amount' => $request->amount,
             'decription' => $request->decription,
         ]);
+
+        Warehouse::where('medicine_id', $request->id)->update([ 'amount' => $request->amount]);
         if($status){
             return redirect()->route('medicine.index')->with('success','Editado con Exitoso');
         }else{
@@ -161,15 +161,17 @@ class MedicineController extends Controller
         $medicine = Medicine::find($id);
         $name = $medicine->name;
         $medicine->delete();
+        Warehouse::where('medicine_id', $id)->delete();
         return redirect()->route('medicine.index')->with('error','Se ha eliminado a '.$name );
     }
     
     /* funciones para los json() */
     public function check(string $id)
     {
-        $medicine = Medicine::select('medicines.*','shelfs.name AS shelfs','warehouse.actual_quantity AS quantity')
+        $medicine = Medicine::select('medicines.*','shelfs.name AS shelf','categories.name AS category','warehouse.actual_quantity AS quantity')
                     ->join('warehouse', 'medicines.id',"=",'warehouse.medicine_id')
                     ->join('shelfs', 'medicines.shelf_id',"=",'shelfs.id')
+                    ->join('categories','medicines.category_id',"=",'categories.id')
                     ->find($id);
         return response()->json($medicine, 200);
     }

@@ -25,44 +25,35 @@
 @endphp
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">listado de Libros</h3>
-        <div class="card-tools">
-            <a class="btn btn-primary btn-md" href="{{route('book.create')}}">{{ __('Crear') }}</a>
-        </div>
+        <h3 class="card-title">listado de Medicinas</h3>
     </div>
     <div class="card-body">
         {{-- Setup data for datatables --}}
     @php
         $heads = [
             'ID',
-            'Título',
-            'Autor',
-            'Editiorial',
+            'Nombre',
+            'Caduca',
             'Estantería',
-            'Año de publicacion',
-            'Genero',
-            'Existecia',
+            'Categoria',
+            'Monto',
+            'Cantidad',
             'Descripcion',
         ];
     @endphp
 
 {{-- Minimal example / fill data using the component slot --}}
 <x-adminlte-datatable id="table1" :heads="$heads">
-    @foreach( $books as $book)
+    @foreach( $medicines as $medicine)
         <tr>
-            <td>{{$book->id}}</td>
-            <td>{{$book->title}}</td>
-            <td>{{$book->author}}</td>
-            <td>{{$book->editorial}}</td>
-            <td>{{$book->shelf}}</td>
-            @php
-                $date = Carbon::parse($book->publication_year);
-                $date = $date->format('d-m-Y');
-            @endphp
-            <td>{{$date}}</td>
-            <td>{{$book->genre}}</td>
-            <td>{{$book->quantity}}</td>
-            <td>{{$book->decription}}</td>
+            <td>{{$medicine->id}}</td>
+            <td>{{$medicine->name}}</td>
+            <td>{{Carbon::parse($medicine->expiration_date)->format('d-m-Y')}}</td>
+            <td>{{$medicine->shelf}}</td>
+            <td>{{$medicine->category}}</td>
+            <td>{{$medicine->amount}}</td>
+            <td>{{$medicine->quantity}}</td>
+            <td>{{$medicine->decription}}</td>
         </tr>
     @endforeach
 </x-adminlte-datatable>

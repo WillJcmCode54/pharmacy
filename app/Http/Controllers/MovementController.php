@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Book;
-use App\Models\BookMovement AS Movement;
-use App\Models\DetailsBookMovement AS MovementDetails;
+use App\Models\Medicine;
+use App\Models\Movement;
+use App\Models\DetailedMovement AS MovementDetails;
 use App\Models\Customer;
 use App\Models\Warehouse;
 use Illuminate\Http\Request;
@@ -17,12 +17,12 @@ class MovementController extends Controller
      */
     public function index()
     {
-        $movements = Movement::select('book_movements.*', 'users.name AS user', 'customers.name AS customer')
-                    ->join('users','book_movements.user_id','=','users.id')
-                    ->leftjoin('customers','book_movements.customer_id','=','customers.id')
-                    ->orderBy("book_movements.created_at","desc")->get();
+        $movements = Movement::select('movements.*', 'users.name AS user', 'customers.name AS customer')
+                    ->join('users','movements.user_id','=','users.id')
+                    ->leftjoin('customers','movements.customer_id','=','customers.id')
+                    ->orderBy("movements.created_at","desc")->get();
 
-        return view("book_movement.index", compact("movements"));
+        return view("movement.index", compact("movements"));
     }
 
     /**
@@ -31,7 +31,7 @@ class MovementController extends Controller
     public function create(Request $request)
     {
 
-        $books = Book::all();
+        $medicines = Medicine::all();
         $customers = Customer::all();
 
         $lastReference =  Movement::select('code')->orderByDesc('code')->first();
@@ -43,7 +43,7 @@ class MovementController extends Controller
         $newReferece = 'M'.substr(str_repeat(0, $digit).$reference, -1 * ($digit));
         $type_movement = $request->type;
 
-        return view("book_movement.create", compact("books","customers",'newReferece', 'type_movement'));
+        return view("movement.create", compact("medicines","customers",'newReferece', 'type_movement'));
     }
 
     /**
@@ -53,26 +53,43 @@ class MovementController extends Controller
     {
         if(is_null($request->quantity)){
             throw ValidationException::withMessages([
-                'book_id'=> 'por favor seleccione un libro'
+                'medicine_id'=> 'por favor seleccione un libro'
             ]);
         }
 
+        if(!is_numeric($request->customer_id)){
+            throw ValidationException::withMessages([
+                'customer_id'=> 'por favor selecciones un Cliente'
+            ]);
+        }
+       
         $movement = Movement::create([
             'code' => $request->code,
             'status' => "saved",
             'type_movement' => $request->type_movement,
-            'user_id'=> Auth::user()->id
+            'user_id'=> Auth::user()->id,
+            'customer_id'=> $request->customer_id,
         ]);
-
-        foreach ($request->book_id as $key => $book) {
-            $quantity = ($request->type_movement == "load") ? $request->quantity[$book] : $request->quantity[$book] * -1;
+        
+        $total = 0;
+        foreach ($request->medicine_id as $key => $medicine) {
+            $quantity = ($request->type_movement == "load") ? $request->quantity[$medicine] : $request->quantity[$medicine] * -1;
+            $subtotal =  $quantity * $request->amount[$medicine];
+        
+            // dd($request->all(),$request->quantity[$medicine], $request->amount[$medicine], $subtotal);
             MovementDetails::create([
-                'book_movement_id' => $movement->id,
+                'movement_id' => $movement->id,
                 'type_movement' => $request->type_movement,
-                'book_id' => $book,
-                'quantity'=> $quantity
+                'medicine_id' => $medicine,
+                'quantity'=> $quantity,
+                'amount'=> $request->amount[$medicine],
+                'subtotal'=> $subtotal,
             ]);
+
+            $total =+ (float) $subtotal;
         }
+
+        $movement->update(['total' => $total]);
 
         if($movement){
             return redirect()->route('movement.index')->with('success','Guardado con Exito');
@@ -89,10 +106,11 @@ class MovementController extends Controller
     {
         $movements = Movement::find($id);
         $movementsDetails = MovementDetails::
-                            select('details_book_movements.*','books.title', 'books.author','books.publication_year')
-                            ->join('books', 'details_book_movements.book_id','=','books.id')
-                            ->where('details_book_movements.book_movement_id',$id)->get();
-        return view("book_movement.view", compact("movements","movementsDetails"));
+                            select('detailed_movements.*','medicines.name', 'shelfs.name AS shelf')
+                            ->join('medicines', 'detailed_movements.medicine_id','=','medicines.id')
+                            ->join('shelfs', 'medicines.shelf_id','=','shelfs.id')
+                            ->where('detailed_movements.movement_id',$id)->get();
+        return view("movement.view", compact("movements","movementsDetails"));
     }
 
     /**
@@ -101,14 +119,15 @@ class MovementController extends Controller
     public function edit(string $id)
     {
         
-        $books = Book::all();
+        $medicines = Medicine::all();
         $customers = Customer::all();
         $movements = Movement::find($id);
         $movementsDetails = MovementDetails::
-            select('details_book_movements.*','books.title', 'books.author','books.publication_year')
-            ->join('books', 'details_book_movements.book_id','=','books.id')
-            ->where('details_book_movements.book_movement_id',$movements->id)->get();
-        return view("book_movement.edit", compact("books","customers", "movements","movementsDetails"));
+            select('detailed_movements.*','medicines.name AS medicine', 'shelfs.name AS shelf')
+            ->join('medicines', 'detailed_movements.medicine_id','=','medicines.id')
+            ->join('shelfs', 'medicines.shelf_id','=','shelfs.id')
+            ->where('detailed_movements.movement_id',$movements->id)->get();
+        return view("movement.edit", compact("medicines","customers", "movements","movementsDetails"));
     }
 
     /**
@@ -118,34 +137,42 @@ class MovementController extends Controller
     {
         if(is_null($request->quantity)){
             throw ValidationException::withMessages([
-                'book_id'=> 'por favor seleccione un libro'
+                'medicine_id'=> 'por favor seleccione un libro'
             ]);
         }
 
-        $movementDetails = MovementDetails::where('book_movement_id', $id)->get();
+        $movementDetails = MovementDetails::where('movement_id', $id)->get();
 
 
         /** Primero eliminamos los libros que ya no estan  */ 
         foreach ($movementDetails as $key => $detail) {
-            if (array_search($detail->book_id,$request->book_id) == null) {
+            if (array_search($detail->medicine_id,$request->medicine_id) == null) {
                 MovementDetails::where('id', '=', $detail->id)->delete();
             }
         }
 
+        $total = 0;
         $movement = Movement::find($id);
-        foreach ($request->book_id as $key => $book) {
-            $quantity = ($request->type_movement == "load") ? $request->quantity[$book] : $request->quantity[$book] * -1;
+        foreach ($request->medicine_id as $key => $medicine) {
+            $quantity = ($request->type_movement == "load") ? $request->quantity[$medicine] : $request->quantity[$medicine] * -1;
+            $subtotal =  $quantity * $request->amount[$medicine];
             $movementDetails = MovementDetails::updateOrCreate(
                 [
-                    'book_movement_id' => $movement->id,
-                    'book_id' => $book,
+                    'movement_id' => $movement->id,
+                    'medicine_id' => $medicine,
                 ],
                 [
-                'type_movement' => $request->type_movement,
-                'quantity'=> $quantity
+                    'type_movement' => $request->type_movement,
+                    'quantity'=> $quantity,
+                    'amount'=> $request->amount[$medicine],
+                    'subtotal'=> $subtotal,
                 ]
             );
+            $total =+ $subtotal;
         }
+
+        $movement->total = $total;
+        $movement->save();
 
         if($movementDetails){
             return redirect()->route('movement.index')->with('success','Guardado con Exito');
@@ -164,7 +191,7 @@ class MovementController extends Controller
         $code = $movement->code;
         $movement->delete();
 
-        MovementDetails::where('book_movement_id','=', $id)->delete();
+        MovementDetails::where('movement_id','=', $id)->delete();
 
         return redirect()->route('movement.index')->with('error','Se ha eliminado a '.$code);
     }
@@ -181,12 +208,13 @@ class MovementController extends Controller
 
 
         /*cargar en almacen */
-        $movementDetails = MovementDetails::where('book_movement_id', $id)->get();
+        $movementDetails = MovementDetails::where('movement_id', $id)->get();
         foreach ($movementDetails as $key => $detail) {
-            $warehouse = Warehouse::find($detail->book_id);
+            $warehouse = Warehouse::find($detail->medicine_id);
             $oldQuantity = (is_null($warehouse->actual_quantity)) ? 0 : $warehouse->actual_quantity ;
             $newQuantity = $oldQuantity + $detail->quantity;
             $warehouse->actual_quantity = $newQuantity;
+            $warehouse->amount = $detail->amount;
             $warehouse->save();
         }
 

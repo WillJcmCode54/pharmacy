@@ -324,7 +324,7 @@ return [
                     ],
                     [
                         'text' => 'download',
-                        'icon' => 'fas fa-fw fa-thumbtack',
+                        'icon' => 'fas fa-fw fa-file-export',
                         'url' => '/movement/create?type=download',
                     ]
             ],

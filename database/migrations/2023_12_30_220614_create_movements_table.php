@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('status');
             $table->integer('user_id');
             $table->integer('customer_id');
-            $table->double('total', 100, 2);
+            $table->double('total', 100, 2)->nullable();
             $table->timestamps();
         });
     }
