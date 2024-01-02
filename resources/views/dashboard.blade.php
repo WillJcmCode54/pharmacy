@@ -14,39 +14,39 @@
     <div class="col-lg-3 col-6">
         <div class="small-box bg-info">
             <div class="inner">
-                {{-- <h3>{{$books}}</h3> --}}
-                <p>Libros Disponibles</p>
+                <h3>{{$medicines}}</h3>
+                <p>Medicinas Disponibles</p>
             </div>
             <div class="icon">
-                <i class="fas fa-book"></i>
+                <i class="fas fa-hand-holding-medical"></i>
             </div>
-            {{-- <a href="{{route('book.index')}}" class="small-box-footer">Mas<i class="fas fa-arrow-circle-right"></i></a> --}}
-        </div>
-    </div>
-        
-    <div class="col-lg-3 col-6">
-        <div class="small-box bg-success">
-            <div class="inner">
-                {{-- <h3>{{$customers}}</h3> --}}
-                <p>Clientes Registrados</p>
-            </div>
-            <div class="icon">
-                <i class="fas fa-users"></i>
-            </div>
-            {{-- <a href="{{route('customer.index')}}" class="small-box-footer">Mas<i class="fas fa-arrow-circle-right"></i></a> --}}
+            <a href="{{route('medicine.index')}}" class="small-box-footer">Mas<i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
         
     <div class="col-lg-3 col-6">
         <div class="small-box bg-warning">
             <div class="inner">
-                {{-- <h3>{{$returns}}</h3> --}}
-                <p>Libros Devueltos</p>
+                <h3>{{$customers}}</h3>
+                <p>Clientes Registrados</p>
             </div>
             <div class="icon">
-                <i class="fas fa-retweet"></i>
+                <i class="fas fa-users"></i>
             </div>
-            {{-- <a href="{{route('return.index')}}" class="small-box-footer">Mas<i class="fas fa-arrow-circle-right"></i></a> --}}
+            <a href="{{route('customer.index')}}" class="small-box-footer">Mas<i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+        
+    <div class="col-lg-3 col-6">
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>{{$load}}</h3>
+                <p>Medicinas Cargada</p>
+            </div>
+            <div class="icon">
+                <i class="fas fa-truck-loading"></i>
+            </div>
+            <a href="{{route('movement.index')}}" class="small-box-footer">Mas<i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
         
@@ -54,43 +54,80 @@
     
         <div class="small-box bg-danger">
             <div class="inner">
-                {{-- <h3>{{$lends}}</h3> --}}
-                <p>Libros Prestados</p>
+                <h3>{{$download}}</h3>
+                <p>Medicinas Descargada</p>
             </div>
             <div class="icon">
-                <i class="fas fa-thumbtack"></i>
+                <i class="fas fa-dolly"></i>
             </div>
-            {{-- <a href="{{route('return.index')}}" class="small-box-footer">Mas<i class="fas fa-arrow-circle-right"></i></a> --}}
+            <a href="{{route('movement.index')}}" class="small-box-footer">Mas<i class="fas fa-arrow-circle-right"></i></a>
         </div>
     </div>
 </div>
 <div class="row">
        
-    <div class="col-lg-12">
-        
+    <div class="col-md-6">
         <div class="card">
-            <div class="card-header border-0">
-                <h3 class="card-title">Clientes en Fecha limites</h3>
+            <div class="card-header">
+                <h4 class="card-title">
+                    Top 5 Medicina cargadas en el periodo {{Carbon::now()->startOfMonth()->format('d/m/Y')}} - {{ Carbon::now()->endOfMonth()->format('d/m/Y')}}
+                </h4>
             </div>
             <div class="card-body">
-                {{-- @foreach ($defaulters as $key => $defaulter) --}}
-                    <div class="d-flex justify-content-between align-items-center border-bottom mb-3">
-                        <p class="text-info text-xl"> 
-                            <i class="fas fa-user-circle"></i>
-                            {{-- <span class="pl-2 h6">{{ mb_strtoupper($defaulter->customer)}} {{mb_strtoupper($defaulter->last_name)}} </span> --}}
-                        </p>
-                        <p class="d-flex flex-column text-right">
-                            <span class="font-weight-bold">
-                            {{-- <i class="fas fa-exclamation text-danger"></i> {{Carbon::parse($defaulter->return_date)->format('Y')}} --}}
-                            </span>
-                            {{-- <span class="text-muted">{{$defaulter->book}} ({{Carbon::parse($defaulter->date)->format('Y')}})</span> --}}
-                        </p>
-                    </div>
-                {{-- @endforeach --}}
+                <table class="table table-striped table-valign-middle text-center">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Medicina</th>
+                            <th>Categoria</th>
+                            <th>Cantidad Cargada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($topMediciesLoad as $key => $item)   
+                        <tr>
+                            <td>{{$key + 1}}</td>
+                            <td>{{$item->medicine}}</td>
+                            <td>{{$item->category}}</td>
+                            <td>{{$item->subtotal}}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
-    
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header">
+                <h4 class="card-title">
+                    Top 5 Medicina descargadas en el periodo {{Carbon::now()->startOfMonth()->format('d/m/Y')}} - {{Carbon::now()->endOfMonth()->format('d/m/Y')}}
+                </h4>
+            </div>
+            <div class="card-body">
+                <table class="table table-striped table-valign-middle text-center">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Medicina</th>
+                            <th>Categoria</th>
+                            <th>Cantidad Descargada</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($topMediciesDownload as $key => $item)   
+                        <tr>
+                            <td>{{$key + 1}}</td>
+                            <td>{{$item->medicine}}</td>
+                            <td>{{$item->category}}</td>
+                            <td>{{$item->subtotal * -1}}</td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 @stop

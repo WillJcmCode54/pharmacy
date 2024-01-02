@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Customer;
+use App\Models\DetailedMovement;
+use App\Models\Medicine;
+use App\Models\Movement;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -10,23 +13,40 @@ class DashboardController extends Controller
 {
     public function index(){
 
-        // $books = Book::get()->count();
-        // $customers = Customer::get()->count();
-        // $lends = BookMovement::where('type_movement', '=', 'lend')->get()->count();
-        // $returns = BookMovement::where('type_movement', '=', 'return')->get()->count();
+        $medicines = Medicine::get()->count();
+        $customers = Customer::get()->count();
+        $load = Movement::where('type_movement', '=', 'load')->get()->count();
+        $download = Movement::where('type_movement', '=', 'download')->get()->count();
 
-        // $startDate = Carbon::now()->startOfWeek()->format('Y-m-d');
-        // $endDate = Carbon::now()->format('Y-m-d');
-        // $defaulters = BookMovement::select('book_movements.*', 'customers.name AS customer', 'customers.last_name AS last_name', 'books.title AS book','books.publication_year AS date')
-        //             ->leftjoin('customers','book_movements.customer_id','=','customers.id')
-        //             ->join('details_book_movements','book_movements.id','=','details_book_movements.book_movement_id')
-        //             ->join('books','details_book_movements.book_id','=','books.id')
-        //             ->where('book_movements.type_movement','=','lend')
-        //             ->where('book_movements.status', 'locked')
-        //             ->whereBetween('book_movements.return_date', [$startDate, $endDate])
-        //             ->orderBy("book_movements.return_date","desc")->get();
+        $startDate = Carbon::now()->startOfMonth()->format('Y-m-d h:i:s');
+        $endDate = Carbon::now()->endOfMonth()->format('Y-m-d h:i:s');
 
-        return view("dashboard");
-        // return view("dashboard", compact("books","customers","lends", 'returns', 'defaulters'));
+        $topMediciesLoad = Movement::selectRaw("`movements`.*,
+                                                `medicines`.`name` AS `medicine`,
+                                                `categories`.`name` AS `category`,
+                                                SUM(`detailed_movements`.`quantity`) AS `subtotal`")
+                    ->join('detailed_movements','movements.id','=','detailed_movements.movement_id')
+                    ->join('medicines','detailed_movements.medicine_id','=','medicines.id')
+                    ->join('categories','medicines.category_id','=','categories.id')
+                    ->where('movements.type_movement','=','load')
+                    ->where('movements.status', 'locked')
+                    ->whereBetween('movements.updated_at', [$startDate, $endDate])
+                    ->groupBy('detailed_movements.medicine_id')
+                    ->orderByRaw("SUM(`detailed_movements`.`quantity`)  DESC")->limit(5)->get();
+
+        $topMediciesDownload = Movement::selectRaw("`movements`.*,
+                                                `medicines`.`name` AS `medicine`,
+                                                `categories`.`name` AS `category`,
+                                                SUM(`detailed_movements`.`quantity`) AS `subtotal`")
+                    ->join('detailed_movements','movements.id','=','detailed_movements.movement_id')
+                    ->join('medicines','detailed_movements.medicine_id','=','medicines.id')
+                    ->join('categories','medicines.category_id','=','categories.id')
+                    ->where('movements.type_movement','=','download')
+                    ->where('movements.status', 'locked')
+                    ->whereBetween('movements.updated_at', [$startDate, $endDate])
+                    ->groupBy('detailed_movements.medicine_id')
+                    ->orderByRaw("SUM(`detailed_movements`.`quantity`) DESC")->limit(5)->get();
+
+        return view("dashboard", compact("medicines","customers","load", 'download', 'topMediciesDownload','topMediciesLoad'));
     }
 }
