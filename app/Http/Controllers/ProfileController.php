@@ -8,6 +8,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class ProfileController extends Controller
 {
@@ -36,6 +39,18 @@ class ProfileController extends Controller
             $pre_value = preg_replace("/[^0-9-.]/", "", $request->number_id);
             $number_id = $legal."".$pre_value;
         }        
+
+        $img = explode('/', $request->old_img);
+        if ( isset($img[3]) && $img[3] != "medicine.png" ) {
+            Storage::disk('img')->delete($img[3]);
+        }
+        $path = ($request->hasFile('img')) ?
+            $request->file('img')->storeAs('public/img', Carbon::now()->format('Y-m-d')."_".mb_strtoupper($request->name).".png")
+        :
+            $path = "img/medicine.png";
+    
+        $url =  Storage::url($path);
+        $request->user()->img = $url;
         
         $phone = ($request->user()->phone);
         $phone = (($phone[0]) != "+") ? "+58".$request->user()->phone : $request->user()->phone;

@@ -23,6 +23,7 @@ class DashboardController extends Controller
 
         $topMediciesLoad = Movement::selectRaw("`movements`.*,
                                                 `medicines`.`name` AS `medicine`,
+                                                `medicines`.`img` AS `img`,
                                                 `categories`.`name` AS `category`,
                                                 SUM(`detailed_movements`.`quantity`) AS `subtotal`")
                     ->join('detailed_movements','movements.id','=','detailed_movements.movement_id')
@@ -36,6 +37,7 @@ class DashboardController extends Controller
 
         $topMediciesDownload = Movement::selectRaw("`movements`.*,
                                                 `medicines`.`name` AS `medicine`,
+                                                `medicines`.`img` AS `img`,
                                                 `categories`.`name` AS `category`,
                                                 SUM(`detailed_movements`.`quantity`) AS `subtotal`")
                     ->join('detailed_movements','movements.id','=','detailed_movements.movement_id')

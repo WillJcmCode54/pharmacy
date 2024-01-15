@@ -12,6 +12,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
 
 class RegisteredUserController extends Controller
 {
@@ -34,6 +37,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'img'=> ['image','max:5120'],
         ]);
 
         if (($request->number_id[0] != "V" || $request->number_id[0] != "E" || $request->number_id[0] != "J" )) {
@@ -44,6 +48,13 @@ class RegisteredUserController extends Controller
             $pre_value = preg_replace("/[^0-9-.]/", "", $request->number_id);
             $number_id = $legal."".$pre_value;
         }        
+
+        $path = ($request->hasFile('img')) ?
+        $request->file('img')->storeAs('public/img', Carbon::now()->format('Y-m-d')."_".mb_strtoupper($request->name).".png")
+        :
+            $path = "img/medicine.png";
+        
+        $url = Storage::url($path);
         
 
         $phone = (($request->phone[0]) != "+") ? "+58".preg_replace("/[^0-9-.]/", "",$request->phone) : $request->phone;
@@ -51,6 +62,7 @@ class RegisteredUserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'last_name' => $request->last_name,
+            'img' => $url,
             'phone' => $phone,
             'number_id' => $number_id,
             'email' => $request->email,

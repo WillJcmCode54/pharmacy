@@ -18,6 +18,7 @@ class User extends Seeder
             'name' => 'Admin' ,
             'last_name' => 'admin' ,
             'number_id' => 'V0000000' ,
+            'img' => '/storage/img/medicine.png' ,
             'phone' => '+000000000' ,
             'email' => 'admin@example.com',
             'password' => Hash::make('12345678'),

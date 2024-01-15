@@ -47,7 +47,10 @@
             @foreach($medicines as $medicine)
                 <tr>
                     <td>{{$medicine->id}}</td>
-                    <td>{{$medicine->name}}</td>
+                    <td>            
+                        <img src="{{asset($medicine->img)}}" alt="{{$medicine->name}}" class="img-circle img-size-50 mr-2">
+                        {{$medicine->name}}
+                    </td>
                     <td>{{Carbon::parse($medicine->expiration_date)->format('d-m-Y')}}</td>
                     <td>{{$medicine->shelf}}</td>
                     <td>{{$medicine->category}}</td>

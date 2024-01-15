@@ -14,7 +14,7 @@
 @section('auth_header', __('adminlte::adminlte.register_message'))
 
 @section('auth_body')
-    <form action="{{ $register_url }}" method="post">
+    <form action="{{ $register_url }}" method="post" enctype="multipart/form-data">
         @csrf
 
         {{-- Name field --}}
@@ -137,13 +137,49 @@
                 </span>
             @enderror
         </div>
+        <div class="row">
+            <label for="img">Imagen</label>
+            <div class="row justify-content-center w-100">
+                <img id="imgPreview" width="100" height="100" />
+                <div class="input-group mb-3">
+                    <input type="file" name="img" id="img" class="form-control" accept="image/png,image/jpeg">
+                    <div class="input-group-append">
+                        <div class="input-group-text">
+                            <span class="fas fa-file-image {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         {{-- Register button --}}
         <button type="submit" class="btn btn-block {{ config('adminlte.classes_auth_btn', 'btn-flat btn-primary') }}">
             <span class="fas fa-user-plus"></span>
             {{ __('adminlte::adminlte.register') }}
         </button>
-
+        <script>
+            document.addEventListener('change', function (event) {
+                //Recuperamos el input que desencadeno la acción
+                const input = event.target;
+                if(input.closest('input[type="file"]'))
+                {            
+                        //Recuperamos la etiqueta img donde cargaremos la imagen
+                        $imgPreview = document.querySelector("img#imgPreview");
+                    
+                        // Verificamos si existe una imagen seleccionada
+                        if(!input.files.length) return
+                    
+                        //Recuperamos el archivo subido
+                        file = input.files[0];
+                    
+                        //Creamos la url
+                        objectURL = URL.createObjectURL(file);
+                    
+                        //Modificamos el atributo src de la etiqueta img
+                        $imgPreview.src = objectURL;
+                }
+            });                       
+        </script>
     </form>
 @stop
 

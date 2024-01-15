@@ -60,8 +60,7 @@
     @foreach( $medicines as $medicine)
         <tr>
             <td>{{$medicine->id}}</td>
-            <td>
-                
+            <td>            
                 <img src="{{asset($medicine->img)}}" alt="{{$medicine->name}}" class="img-circle img-size-50 mr-2">
                 {{$medicine->name}}
             </td>

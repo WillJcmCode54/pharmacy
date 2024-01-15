@@ -290,7 +290,7 @@ return [
     */
 
     'menu' => [
-      
+ 
         // Sidebar items
         ['header' => 'main_navigation'],
         [

@@ -87,7 +87,10 @@
                         @foreach ($topMediciesLoad as $key => $item)   
                         <tr>
                             <td>{{$key + 1}}</td>
-                            <td>{{$item->medicine}}</td>
+                            <td>            
+                                <img src="{{asset($item->img)}}" alt="{{$item->medicine}}" class="img-circle img-size-32 mr-2">
+                                {{$item->medicine}}
+                            </td>
                             <td>{{$item->category}}</td>
                             <td>{{$item->subtotal}}</td>
                         </tr>
@@ -118,7 +121,10 @@
                         @foreach ($topMediciesDownload as $key => $item)   
                         <tr>
                             <td>{{$key + 1}}</td>
-                            <td>{{$item->medicine}}</td>
+                            <td>            
+                                <img src="{{asset($item->img)}}" alt="{{$item->medicine}}" class="img-circle img-size-32 mr-2">
+                                {{$item->medicine}}
+                            </td>
                             <td>{{$item->category}}</td>
                             <td>{{$item->subtotal * -1}}</td>
                         </tr>
