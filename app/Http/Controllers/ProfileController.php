@@ -47,7 +47,7 @@ class ProfileController extends Controller
         $path = ($request->hasFile('img')) ?
             $request->file('img')->storeAs('public/img', Carbon::now()->format('Y-m-d')."_".mb_strtoupper($request->name).".png")
         :
-            $path = "img/medicine.png";
+            $path = "img/user.png";
     
         $url =  Storage::url($path);
         $request->user()->img = $url;
