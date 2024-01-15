@@ -56,11 +56,15 @@
     @endphp
 
 {{-- Minimal example / fill data using the component slot --}}
-<x-adminlte-datatable id="table1" :heads="$heads">
+<x-adminlte-datatable id="table1" :heads="$heads" striped hoverable >
     @foreach( $medicines as $medicine)
         <tr>
             <td>{{$medicine->id}}</td>
-            <td>{{$medicine->name}}</td>
+            <td>
+                
+                <img src="{{asset($medicine->img)}}" alt="{{$medicine->name}}" class="img-circle img-size-50 mr-2">
+                {{$medicine->name}}
+            </td>
             <td>{{$medicine->decription}}</td>
             <td>{{Carbon::parse($medicine->expiration_date)->format('d-m-Y')}}</td>
             <td>{{$medicine->amount}}</td>

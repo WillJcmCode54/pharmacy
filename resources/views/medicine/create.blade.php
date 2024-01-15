@@ -38,7 +38,7 @@
     <div class="card-header">
         <h3 class="card-title">Crear Medicina</h3>
     </div>
-    <form action="{{ route('medicine.store') }}" method="post">
+    <form action="{{ route('medicine.store') }}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="card-body">
             {{-- Name field --}}
@@ -124,9 +124,28 @@
             </div>
             <div class="row">
                 <div class="col">
-                    <div class="form-group">
-                        <label for="amount">Monto</label>
+                    <label for="amount">Monto</label>
+                    <div class="input-group mb-3">
                         <input type="number" name="amount" id="amount" class="form-control" value="{{old('amount')}}" min="0" step="any">
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-primary">
+                                <span class="fas fa-money-bill-alt {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <label for="img">Imagen</label>
+                <div class="row justify-content-center w-100">
+                    <img id="imgPreview" width="100" height="100"/>
+                    <div class="input-group mb-3">
+                        <input type="file" name="img" id="img" class="form-control" accept="image/png,image/jpeg">
+                        <div class="input-group-append">
+                            <div class="input-group-text bg-primary">
+                                <span class="fas fa-file-image {{ config('adminlte.classes_auth_icon', '') }}"></span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -152,4 +171,33 @@
         </div>
     </form>
 </div>
+@stop
+
+@section('js')
+<script>
+
+    document.addEventListener('change', function (event) {
+        //Recuperamos el input que desencadeno la acción
+        const input = event.target;
+        if(input.closest('input[type="file"]'))
+        {            
+                //Recuperamos la etiqueta img donde cargaremos la imagen
+                $imgPreview = document.querySelector("img#imgPreview");
+            
+                // Verificamos si existe una imagen seleccionada
+                if(!input.files.length) return
+            
+                //Recuperamos el archivo subido
+                file = input.files[0];
+            
+                //Creamos la url
+                objectURL = URL.createObjectURL(file);
+            
+                //Modificamos el atributo src de la etiqueta img
+                $imgPreview.src = objectURL;
+        }
+    });
+
+                    
+</script>
 @stop

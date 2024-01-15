@@ -13,6 +13,7 @@ class Medicine extends Model
 
     protected $fillable = [
         "name",
+        "img",
         "decription",
         "amount",
         "expiration_date",

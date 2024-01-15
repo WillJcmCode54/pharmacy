@@ -9,6 +9,8 @@ use App\Models\Warehouse;
 use Carbon\Carbon;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class MedicineController extends Controller
 {
@@ -47,6 +49,7 @@ class MedicineController extends Controller
             'shelf_id' => 'required',
             'amount' => 'required',
             'decription' => 'required',
+            'img'=> 'image|max:5120',
         ]);
 
         if(!is_numeric($request->shelf_id)){
@@ -59,12 +62,19 @@ class MedicineController extends Controller
                 'category_id'=> 'por favor selecciones una categoria'
             ]);
         }
+        $path = ($request->hasFile('img')) ?
+            $request->file('img')->storeAs('public/img', Carbon::now()->format('Y-m-d')."_".mb_strtoupper($request->name).".png")
+        :
+            $path = "img/medicine.png";
+        
+        $url = Storage::url($path);
 
         $date = Carbon::parse($request->expiration_date);
         $date = $date->format('Y-m-d');
 
         $medicine = Medicine::create([
             "name"=> $request->name,
+            "img"=> $url,
             'expiration_date' => $date,
             'category_id' => $request->category_id,
             'shelf_id' => $request->shelf_id,
@@ -88,7 +98,7 @@ class MedicineController extends Controller
      */
     public function show(string $id)
     {
-        $medicine = Medicine::select('medicines.*','shelfs.name AS shelf')
+        $medicine = Medicine::select('medicines.*','shelfs.name AS shelf', 'categories.name AS category')
                     ->join('shelfs', 'medicines.shelf_id',"=",'shelfs.id')
                     ->join('categories','medicines.category_id',"=",'categories.id')
                     ->find($id);
@@ -119,6 +129,7 @@ class MedicineController extends Controller
             'shelf_id' => 'required',
             'amount' => 'required',
             'decription' => 'required',
+            'img'=> 'image|max:5120',
         ]);
 
         if(!is_numeric($request->shelf_id)){
@@ -132,6 +143,18 @@ class MedicineController extends Controller
             ]);
         }
 
+        //se elimina la imagen
+        $img = explode('/', $request->old_img);
+        if ($img[3] != "medicine.png" ) {
+            Storage::disk('img')->delete($img[3]);
+        }
+        $path = ($request->hasFile('img')) ?
+            $request->file('img')->storeAs('public/img', Carbon::now()->format('Y-m-d')."_".mb_strtoupper($request->name).".png")
+        :
+            $path = "img/medicine.png";
+    
+        $url =  Storage::url($path);
+
         $medicine = Medicine::find($id);
         $date = Carbon::parse($request->expiration_date);
         $date = $date->format('Y-m-d');
@@ -143,6 +166,7 @@ class MedicineController extends Controller
             'shelf_id' => $request->shelf_id,
             'amount' => $request->amount,
             'decription' => $request->decription,
+            'img' => $url
         ]);
 
         Warehouse::where('medicine_id', $request->id)->update([ 'amount' => $request->amount]);
@@ -160,6 +184,11 @@ class MedicineController extends Controller
     {
         $medicine = Medicine::find($id);
         $name = $medicine->name;
+        $img = explode('/', $medicine->img);
+        if ($img[3] != "medicine.png" ) {
+            Storage::disk('img')->delete($img[3]);
+        }
+        Storage::disk('img')->delete($img);
         $medicine->delete();
         Warehouse::where('medicine_id', $id)->delete();
         return redirect()->route('medicine.index')->with('error','Se ha eliminado a '.$name );

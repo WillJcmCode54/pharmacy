@@ -49,7 +49,7 @@
     @endphp
 
 {{-- Minimal example / fill data using the component slot --}}
-<x-adminlte-datatable id="table1" :heads="$heads">
+<x-adminlte-datatable id="table1" :heads="$heads" striped hoverable >
     @foreach( $categories as $category)
         <tr>
             <td>{{$category->id}}</td>

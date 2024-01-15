@@ -66,7 +66,7 @@
     @endphp
 
 {{-- Minimal example / fill data using the component slot --}}
-<x-adminlte-datatable id="table1" :heads="$heads">
+<x-adminlte-datatable id="table1" :heads="$heads" striped hoverable >
     @foreach( $movements as $movement)
         <tr>
             <td>{{$movement->id}}</td>
