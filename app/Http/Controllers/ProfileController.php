@@ -41,7 +41,7 @@ class ProfileController extends Controller
         }        
 
         $img = explode('/', $request->old_img);
-        if ( isset($img[3]) && $img[3] != "medicine.png" ) {
+        if ( isset($img[3]) && $img[3] != "user.png" ) {
             Storage::disk('img')->delete($img[3]);
         }
         $path = ($request->hasFile('img')) ?
