@@ -47,8 +47,8 @@ class CustomerController extends Controller
             $number_id = $legal."".$pre_value;
         }        
         
-        $phone = ($request->user()->phone);
-        $phone = (($phone[0]) != "+") ? "+58".$request->user()->phone : $request->user()->phone;
+        $phone = ($request->phone);
+        $phone = (($phone[0]) != "+") ? "+58".$request->phone : $request->phone;
 
         $customer = Customer::create([
             'name' => $request->name,

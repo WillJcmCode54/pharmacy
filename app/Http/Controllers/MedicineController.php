@@ -144,16 +144,16 @@ class MedicineController extends Controller
         }
 
         //se elimina la imagen
-        $img = explode('/', $request->old_img);
-        if ($img[3] != "medicine.png" ) {
-            Storage::disk('img')->delete($img[3]);
+        // $img = explode('/', $request->old_img);
+        // if ($img[3] != "medicine.png" ) {
+        //     Storage::disk('img')->delete($img[3]);
+        // }
+         if($request->hasFile('img')) {
+            $path =$request->file('img')->storeAs('public/img', Carbon::now()->format('Y-m-d')."_".mb_strtoupper($request->name).".png");
+            $url =  Storage::url($path);
+        }else{
+            $url =$request->old_img;
         }
-        $path = ($request->hasFile('img')) ?
-            $request->file('img')->storeAs('public/img', Carbon::now()->format('Y-m-d')."_".mb_strtoupper($request->name).".png")
-        :
-            $path = "img/medicine.png";
-    
-        $url =  Storage::url($path);
 
         $medicine = Medicine::find($id);
         $date = Carbon::parse($request->expiration_date);
